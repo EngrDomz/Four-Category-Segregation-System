@@ -1,3 +1,14 @@
+/**
+  NAME: Four-Category Segregation System (Conveyor Module)
+  FUNCTION: Activates the conveyor module on the cue of the master Arduino for 30 seconds. Stops the motor when IR sensor detects object within 30 seconds
+
+  @software: & @hardware: Niño, Dominik O.
+  @version: 1 March/08/2024
+  @paragm: For more details contact:
+  @paragm: LinknedIn: linkedin.com/in/dominik-niño
+  @paragm: Github: github.com/EngrDomz
+*/
+
 // Store I/O pins to a constant variable
 #define MOTOR_SPEED 500  // Controls the speed of the stepper motor the lower value the faster it will runn (currently 500 is the lowest possible)
 #define DIR_PIN 2
