@@ -1,3 +1,14 @@
+/**
+  NAME: Four-Category Segregation System
+  FUNCTION: Classifies the garbage based on four gategories (Plastic, Metal, Paper/Dry, Wet)
+
+  @software: & @hardware: Niño, Dominik O.
+  @version: 1 March/08/2024
+  @paragm: For more details contact:
+  @paragm: LinknedIn: linkedin.com/in/dominik-niño
+  @paragm: Github: github.com/EngrDomz
+*/
+
 // Include neccesary libraries
 #include <Wire.h>               // Wire library
 #include <Servo.h>              // Library to control servo motors
