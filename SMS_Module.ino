@@ -1,6 +1,6 @@
 /**
-  NAME: Four-Category Segregation System
-  FUNCTION: Classifies the garbage based on four gategories (Plastic, Metal, Paper/Dry, Wet)
+  NAME: Four-Category Segregation System (SMS Module)
+  FUNCTION: Monitors the garbage level on trash bins. Send message to registered users when either of the bins are full.
 
   @software: & @hardware: Niño, Dominik O.
   @version: 1 March/08/2024
