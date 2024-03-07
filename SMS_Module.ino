@@ -1,3 +1,14 @@
+/**
+  NAME: Four-Category Segregation System
+  FUNCTION: Classifies the garbage based on four gategories (Plastic, Metal, Paper/Dry, Wet)
+
+  @software: & @hardware: Niño, Dominik O.
+  @version: 1 March/08/2024
+  @paragm: For more details contact:
+  @paragm: LinknedIn: linkedin.com/in/dominik-niño
+  @paragm: Github: github.com/EngrDomz
+*/
+
 //Install Necessary Libraries
 #include <GPRS_Shield_Arduino.h>  // for SIM800L Module
 #include <EasyEEPROM.h>           // eeprom to store data
@@ -35,7 +46,8 @@
 
 // SMS variables start //--------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #define BAUDRATE 9600
-
+#define PHONE_NUMBER "+639*********"  // Change with the developer phone number
+#define OPEN_MESSAGE "MACHINE IS READY!"
 // SMS Feedback Messages
 #define SUCCESS "REGISTRATION SUCCESS!"
 
@@ -102,6 +114,10 @@ void setup() {
   pinMode(WET_FULL_SLAVE_PIN, OUTPUT);
 
   loadPhoneNumbers();  // Load phone numbers from eeprom to update numbers on phoneNumbers variable which is used to send message whenever bins are full
+
+  // Sends a welcome message to the developer
+  Serial.println(GSMTEST.sendSMS(PHONE_NUMBER, OPEN_MESSAGE));
+  Serial.println(WELCOME);
 }
 
 void loop() {
@@ -112,6 +128,19 @@ void loop() {
   float wetVal = measureDistance(WET_TRIG_PIN, WET_ECHO_PIN);
 
   SMSReceive();  // Try to receive message if any
+
+  // Serial.print(F("Paper Capacity: "));
+  // Serial.print(paperVal);
+  // Serial.print(F(" cm | "));
+  // Serial.print(F("Plastic Capacity: "));
+  // Serial.print(plasticVal);
+  // Serial.print(F(" cm | "));
+  // Serial.print(F("Metal Capacity: "));
+  // Serial.print(metalVal);
+  // Serial.print(F(" cm | "));
+  // Serial.print(F("Wet Capacity: "));
+  // Serial.print(wetVal);
+  // Serial.println(F(" cm | "));
 
   // Checks if the any bin is full
   // comparing the bin capacity reading to the full capacity threshold
@@ -169,6 +198,21 @@ void loop() {
     checkAndSendSMS();
   }
 
+  // Serial.print("ADMIN NUMBER: ");
+  // Serial.println(phoneNumbers[0]);
+
+  // Serial.print("USER NUMBER 1: ");
+  // Serial.println(phoneNumbers[1]);
+
+  // Serial.print("USER NUMBER 2: ");
+  // Serial.println(phoneNumbers[2]);
+
+  // Serial.print("USER NUMBER 3: ");
+  // Serial.println(phoneNumbers[3]);
+
+  // Serial.print("USER NUMBER 4: ");
+  // Serial.println(phoneNumbers[4]);
+
   SMSReceive();  // Try to receive message again if any
 }
 
@@ -215,12 +259,21 @@ void SMSReceive() {
     if (phoneNumbers[0][0] == '+') {                  // This condition will check if the 1st number on phoneNumbers variable starts with "+" which means that there is already an admin
       isAdmin = strcmp(PHONE, phoneNumbers[0]) == 0;  // if so it will compare if the senders phone number is same as the phone number of the admin registered, if yes, then it will update the boolean isAdmin to true
     }
+
+    // Serial.print(F("Sender: "));
+    // Serial.print(PHONE);
+    // Serial.print(F(" Message: "));
+    // Serial.println(MESSAGE);
+    // strcpy(CURRENT_MESSAGE, MESSAGE);
+
     //-----------------------------------------------------------------------"REGISTER ADMIN"---------------------------------------------------------------------------------------------//
 
     if (strcmp(MESSAGE, "REGISTER ADMIN") == 0) {  // This condition checks if the Message received is the same as "REGISTER ADMIN"
                                                    // If yes it will continue the process inside this condition
       deleteUserMode = false;                      // Delete user mode will be disabled
       addUserMode = false;                         // Add user mode will be disabled
+
+      // Serial.print(F(" Message coppied!: "));
 
       // This condition checks if phoneNumber variable has already contain a number
       if (phoneNumbers[0][0] != '+') {
@@ -248,10 +301,10 @@ void SMSReceive() {
       deleteUserMode = false;                                // Delete user mode will be disabled
       addUserMode = true;                                    // Add user mode will be enabled
 
-      if (eeprom.countRegisteredNumbers() >= 5) {                    // This condition will check if the number of registered users are greater than or equal to 5
-        GSMTEST.sendSMS(phoneNumbers[0], "MAXIMUM USERS REACHED!");  // If yes it will send feedback to the admin that maximum users have reached
-        GSMTEST.deleteSMS(messageIndex);                             // This method delete all message on inbox
-        return;                                                      // Then it will return on receiving message
+      if (eeprom.countRegisteredNumbers() >= 5) {                                    // This condition will check if the number of registered users are greater than or equal to 5
+        Serial.println(GSMTEST.sendSMS(phoneNumbers[0], "MAXIMUM USERS REACHED!"));  // If yes it will send feedback to the admin that maximum users have reached
+        GSMTEST.deleteSMS(messageIndex);                                             // This method delete all message on inbox
+        return;                                                                      // Then it will return on receiving message
       }
       // If the number of registered user is less than 5 then it will give feedback to the admin to input a user to register
       GSMTEST.sendSMS(PHONE, "INPUT A USER NUMBER TO REGISTER!");
@@ -345,7 +398,12 @@ void sendSMSFullBin(const char* binType) {
   if (lastBin == Bin) {
     // If registered user is greater than one then it will send message to the registered user for every 30 mins
     if (eeprom.countRegisteredNumbers() >= 1 && ((currentTime - lastMessageTime >= MESSAGE_INTERVAL))) {
+
+      // Serial.print("in sending group message: " );
+      // Serial.println(eeprom.countRegisteredNumbers());
+
       for (int i = 0; i < eeprom.countRegisteredNumbers(); i++) {
+        Serial.println(phoneNumbers[i]);
         GSMTEST.sendSMS(phoneNumbers[i], message);  // This instance will send the message to each user registered
         delay(10);                                  // Delay between each send to the users
       }
