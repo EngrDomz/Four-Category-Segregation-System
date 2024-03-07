@@ -1,5 +1,5 @@
 /**
-  NAME: Four-Category Segregation System
+  NAME: Four-Category Segregation System (Sensor Module)
   FUNCTION: Classifies the garbage based on four gategories (Plastic, Metal, Paper/Dry, Wet)
 
   @software: & @hardware: Niño, Dominik O.
